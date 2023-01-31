@@ -1,12 +1,12 @@
 package com.example.cocalculator
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -20,81 +20,53 @@ fun Calculator() {
 @Preview
 @Composable
 fun CalculatorPreview() {
-    Calculator()
+    val options = listOf("Food", "Bill Payment", "Recharges", "Outing", "Other")
+    Spinner(options) { Log.d("Stuff", "The selected is: $it") }
 }
 
-@Preview
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun CountrySelectionPreview() {
-    CountrySelection()
-}
+fun Spinner(options: List<String>, onSelect: (String)->Unit) {
+    //val options = listOf("Food", "Bill Payment", "Recharges", "Outing", "Other")
 
-@Composable
-fun DropDownList(
-    requestToOpen: Boolean = false,
-    list: List<String>,
-    request: (Boolean) -> Unit,
-    selectedString: (String) -> Unit
-) {
-    DropdownMenu(
-        modifier = Modifier.fillMaxWidth(),
-        expanded = requestToOpen,
-        onDismissRequest = { request(false) },
+    var expanded by remember { mutableStateOf(false) }
+    var selectedOptionText by remember { mutableStateOf(options[0]) }
+
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = {
+            expanded = !expanded
+        }
     ) {
-        list.forEach {
-            DropdownMenuItem(
-                modifier = Modifier.fillMaxWidth(),
-                onClick = {
-                    request(false)
-                    selectedString(it)
+        TextField(
+            readOnly = true,
+            value = selectedOptionText,
+            onValueChange = { },
+            label = { Text("Categories") },
+            trailingIcon = {
+                ExposedDropdownMenuDefaults.TrailingIcon(
+                    expanded = expanded
+                )
+            },
+            colors = ExposedDropdownMenuDefaults.textFieldColors()
+        )
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = {
+                expanded = false
+            }
+        ) {
+            options.forEach { selectionOption ->
+                DropdownMenuItem(
+                    onClick = {
+                        selectedOptionText = selectionOption
+                        expanded = false
+                        onSelect(selectionOption)
+                    }
+                ) {
+                    Text(text = selectionOption)
                 }
-            ) {
-                Text(it, modifier = Modifier.wrapContentWidth())
             }
         }
-    }
-}
-@Composable
-fun CountrySelection() {
-    val countryList = listOf(
-        "United state",
-        "Australia",
-        "Japan",
-        "India",
-    )
-    val text = remember { mutableStateOf("") } // initial value
-    val isOpen = remember { mutableStateOf(false) } // initial value
-    val openCloseOfDropDownList: (Boolean) -> Unit = {
-        isOpen.value = it
-    }
-    val userSelectedString: (String) -> Unit = {
-        text.value = it
-    }
-    Box {
-        Column {
-            TextButton(
-                //onValueChange = {// text.value = it
-                    //Log.d("Stuff", "aaaa!")
-                  //   },
-                onClick = {},
-                //label = { Text(text = "TextFieldTitle") },
-                modifier = Modifier.fillMaxWidth()
-            ){Text(text.value)}
-            DropDownList(
-                requestToOpen = isOpen.value,
-                list = countryList,
-                openCloseOfDropDownList,
-                userSelectedString
-            )
-        }
-        Spacer(
-            modifier = Modifier
-                .matchParentSize()
-                .background(Color.Transparent)
-                .padding(10.dp)
-                .clickable(
-                    onClick = { isOpen.value = true }
-                )
-        )
     }
 }
