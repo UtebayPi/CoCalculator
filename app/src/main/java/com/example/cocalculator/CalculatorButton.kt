@@ -1,4 +1,8 @@
 package com.example.cocalculator
 
-class CalculatorButton {
+import androidx.compose.runtime.Composable
+
+@Composable
+fun CalculatorButton() {
+
 }
