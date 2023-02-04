@@ -12,6 +12,6 @@ fun CalculatorButton(content: String, modifier: Modifier, onClick: () -> Unit) {
         onClick = onClick,
         modifier = Modifier.then(modifier)
     ) {
-        Text(text = content, fontSize = 36.sp)
+        Text(text = content, fontSize = 36.sp, maxLines = 1)
     }
 }

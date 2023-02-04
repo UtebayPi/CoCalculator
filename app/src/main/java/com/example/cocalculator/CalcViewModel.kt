@@ -15,10 +15,29 @@ class CalcViewModel : ViewModel() {
     var operation by mutableStateOf<Operations?>(null)
         private set
 
+    fun validateNumber1() =
+        number2.isEmpty() && operation == null && number1.length <= MAX_NUM_LENGTH
+
+    fun validateNumber2() =
+        number1.isNotEmpty() && operation != null && number2.length <= MAX_NUM_LENGTH
+
     fun numberPressed(newNumber: String) {
         when {
-            number2.isEmpty() && operation == null -> number1 += newNumber
-            number1.isNotEmpty() && operation != null -> number2 += newNumber
+            validateNumber1() -> {
+                if (number1.firstOrNull() != '0' || number1.take(2) == "0.")
+                    number1 += newNumber
+            }
+            validateNumber2() -> {
+                if (number2.firstOrNull() != '0' || number2.take(2) == "0.")
+                    number2 += newNumber
+            }
+        }
+    }
+
+    fun dotPressed() {
+        when {
+            validateNumber1() && number1.isNotEmpty() && !number1.contains(".") -> number1 += "."
+            validateNumber2() && number2.isNotEmpty() && !number2.contains(".") -> number2 += "."
         }
     }
 
@@ -43,14 +62,21 @@ class CalcViewModel : ViewModel() {
 
     fun calculate() {
         if (number1.isEmpty() || number2.isEmpty() || operation == null) return
-        number1 = when (operation) {
+        val num1 = number1.toFloatOrNull()
+        val num2 = number2.toFloatOrNull()
+        if (num1 == null || num2 == null) return
+        val result = when (operation) {
             Operations.Multiply ->
-                number1.toInt() * number2.toInt()
-            Operations.Divide -> number1.toInt() / number2.toInt()
-            Operations.Subtract -> number1.toInt() - number2.toInt()
-            Operations.Add -> number1.toInt() + number2.toInt()
+                num1 * num2
+            Operations.Divide -> {
+                if (num2 == 0F) return else
+                    num1 / num2
+            }
+            Operations.Subtract -> num1 - num2
+            Operations.Add -> num1 + num2
             null -> return
         }.toString()
+        number1 = if (result.takeLast(2) == ".0") result.dropLast(2) else result
         number2 = ""
         operation = null
     }
@@ -62,3 +88,5 @@ enum class Operations(val symbol: String) {
     Subtract("-"),
     Add("+")
 }
+
+const val MAX_NUM_LENGTH = 10

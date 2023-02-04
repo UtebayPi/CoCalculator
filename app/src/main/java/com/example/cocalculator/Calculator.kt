@@ -1,11 +1,23 @@
 package com.example.cocalculator
 
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Backspace
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.cocalculator.ui.theme.CoCalculatorTheme
 
@@ -13,98 +25,212 @@ import com.example.cocalculator.ui.theme.CoCalculatorTheme
 fun Calculator() {
     val viewModel = viewModel<CalcViewModel>()
     val spacing = 8.dp
-    Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Bottom) {
-        Text(text = viewModel.number1 + (viewModel.operation?.symbol ?: "") + viewModel.number2)
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround) {
+    val scrollState = rememberScrollState(0)
+//    Column(verticalArrangement = Arrangement.Bottom) {
+//        Text(
+//            text = "afssggsogihgifghfdgdghofisjhoigidsfsfsdfjoisfishgiosdhdoihgosdogisdghojsgidoshsohgdshgosgdoghosdhgodishgsdodhogdhgoisghsghsdghsghsgoisdhgoisdgosighso",
+////            text = viewModel.number1 +
+////                    (viewModel.operation?.symbol ?: "") +
+////                    viewModel.number2,
+//            modifier = Modifier
+//                .align(Alignment.End)
+//                .weight(1F)
+//                .verticalScroll(scrollState),
+//            fontSize = 70.sp,
+//            //maxLines = 2,
+//            lineHeight = 70.sp
+//        )
+    Column(
+        modifier = Modifier
+            //.weight(2F)
+            .fillMaxSize()
+            .padding(PaddingValues(spacing)),
+        verticalArrangement = Arrangement
+            .spacedBy(spacing, alignment = Alignment.Bottom)
+    ) {
+        Box(
+            modifier = Modifier
+                .weight(1F)
+                .align(Alignment.End)
+        ) {
+            Text(
+                // text = "afssggsdghsgsdgohddd",
+                text = viewModel.number1 +
+                        (viewModel.operation?.symbol ?: "") +
+                        viewModel.number2,
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    //.weight(1F)
+                    .verticalScroll(scrollState),
+                fontSize = 70.sp,
+                textAlign = TextAlign.End,
+                //maxLines = 2,
+                lineHeight = 70.sp,
+            )
+        }
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(spacing)
+        ) {
             CalculatorButton(
                 onClick = { viewModel.allClear() },
-                modifier = Modifier.weight(2F),
+                modifier = Modifier
+                    .aspectRatio(2.1F)
+                    .weight(2.1F),
                 content = "AC"
             )
-            CalculatorButton(
-                onClick = { viewModel.delete() },
-                modifier = Modifier.weight(1F),
-                content = "del"
+            Icon(
+                imageVector = Icons.Filled.Backspace,
+                tint = if (isSystemInDarkTheme()) MaterialTheme.colorScheme.surface
+                else Color.White,
+                contentDescription = "Delete",
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .aspectRatio(1F)
+                    .weight(1F)
+                    .background(MaterialTheme.colorScheme.primary)
+                    .clickable { viewModel.delete() }
+                    .scale(0.5F)
+                    .offset(x = -3.dp)
             )
             CalculatorButton(
                 onClick = { viewModel.operationPressed(Operations.Divide) },
-                modifier = Modifier.weight(1F),
+                modifier = Modifier
+                    .aspectRatio(1F)
+                    .weight(1F),
                 content = "/"
             )
 
         }
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(spacing)
+        ) {
             CalculatorButton(
-                modifier = Modifier.weight(1F),
+                modifier = Modifier
+                    .aspectRatio(1F)
+                    .weight(1F),
                 onClick = { viewModel.numberPressed("7") },
                 content = "7"
             )
             CalculatorButton(
-                modifier = Modifier.weight(1F),
+                modifier = Modifier
+                    .aspectRatio(1F)
+                    .weight(1F),
                 onClick = { viewModel.numberPressed("8") },
                 content = "8"
             )
             CalculatorButton(
-                modifier = Modifier.weight(1F),
+                modifier = Modifier
+                    .aspectRatio(1F)
+                    .weight(1F),
                 onClick = { viewModel.numberPressed("9") },
                 content = "9"
             )
             CalculatorButton(
-                modifier = Modifier.weight(1F),
+                modifier = Modifier
+                    .aspectRatio(1F)
+                    .weight(1F),
                 onClick = { viewModel.operationPressed(Operations.Multiply) }, content = "*"
             )
         }
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(spacing)
+        ) {
             CalculatorButton(
-                modifier = Modifier.weight(1F),
-                onClick = { viewModel.numberPressed("4") }, content = "4"
+                modifier = Modifier
+                    .aspectRatio(1F)
+                    .weight(1F),
+                onClick = { viewModel.numberPressed("4") },
+                content = "4"
             )
             CalculatorButton(
-                modifier = Modifier.weight(1F),
-                onClick = { viewModel.numberPressed("5") }, content = "5"
+                modifier = Modifier
+                    .aspectRatio(1F)
+                    .weight(1F),
+                onClick = { viewModel.numberPressed("5") },
+                content = "5"
             )
             CalculatorButton(
-                modifier = Modifier.weight(1F),
-                onClick = { viewModel.numberPressed("6") }, content = "6"
+                modifier = Modifier
+                    .aspectRatio(1F)
+                    .weight(1F),
+                onClick = { viewModel.numberPressed("6") },
+                content = "6"
             )
             CalculatorButton(
-                modifier = Modifier.weight(1F),
-                onClick = { viewModel.operationPressed(Operations.Subtract) }, content = "-"
-            )
-        }
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround) {
-            CalculatorButton(
-                modifier = Modifier.weight(1F),
-                onClick = { viewModel.numberPressed("1") }, content = "1"
-            )
-            CalculatorButton(
-                modifier = Modifier.weight(1F),
-                onClick = { viewModel.numberPressed("2") }, content = "2"
-            )
-            CalculatorButton(
-                modifier = Modifier.weight(1F),
-                onClick = { viewModel.numberPressed("3") }, content = "3"
-            )
-            CalculatorButton(
-                modifier = Modifier.weight(1F),
-                onClick = { viewModel.operationPressed(Operations.Add) }, content = "+"
+                modifier = Modifier
+                    .aspectRatio(1F)
+                    .weight(1F),
+                onClick = { viewModel.operationPressed(Operations.Subtract) },
+                content = "-"
             )
         }
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(spacing)
+        ) {
             CalculatorButton(
-                modifier = Modifier.weight(2F),
-                onClick = { viewModel.numberPressed("0") }, content = "0"
+                modifier = Modifier
+                    .aspectRatio(1F)
+                    .weight(1F),
+                onClick = { viewModel.numberPressed("1") },
+                content = "1"
             )
-            CalculatorButton(modifier = Modifier.weight(1F), onClick = { /*TODO*/ }, content = ".")
             CalculatorButton(
-                modifier = Modifier.weight(1F),
+                modifier = Modifier
+                    .aspectRatio(1F)
+                    .weight(1F),
+                onClick = { viewModel.numberPressed("2") },
+                content = "2"
+            )
+            CalculatorButton(
+                modifier = Modifier
+                    .aspectRatio(1F)
+                    .weight(1F),
+                onClick = { viewModel.numberPressed("3") },
+                content = "3"
+            )
+            CalculatorButton(
+                modifier = Modifier
+                    .aspectRatio(1F)
+                    .weight(1F),
+                onClick = { viewModel.operationPressed(Operations.Add) },
+                content = "+"
+            )
+        }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(spacing)
+        ) {
+            CalculatorButton(
+                modifier = Modifier
+                    .aspectRatio(2.1F)
+                    .weight(2.1F),
+                onClick = { viewModel.numberPressed("0") },
+                content = "0"
+            )
+            CalculatorButton(
+                modifier = Modifier
+                    .aspectRatio(1F)
+                    .weight(1F),
+                onClick = { viewModel.dotPressed() },
+                content = "."
+            )
+            CalculatorButton(
+                modifier = Modifier
+                    .aspectRatio(1F)
+                    .weight(1F),
                 onClick = { viewModel.calculate() },
                 content = "="
             )
         }
     }
-
 }
+
+//}
 
 @Preview
 @Composable
