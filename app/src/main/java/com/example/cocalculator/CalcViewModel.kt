@@ -16,10 +16,10 @@ class CalcViewModel : ViewModel() {
         private set
 
     fun validateNumber1() =
-        number2.isEmpty() && operation == null && number1.length <= MAX_NUM_LENGTH
+        number2.isEmpty() && operation == null && number1.length <= NUMBER_LIMIT
 
     fun validateNumber2() =
-        number1.isNotEmpty() && operation != null && number2.length <= MAX_NUM_LENGTH
+        number1.isNotEmpty() && operation != null && number2.length <= NUMBER_LIMIT
 
     fun numberPressed(newNumber: String) {
         when {
@@ -89,4 +89,4 @@ enum class Operations(val symbol: String) {
     Add("+")
 }
 
-const val MAX_NUM_LENGTH = 10
+const val NUMBER_LIMIT = 15
