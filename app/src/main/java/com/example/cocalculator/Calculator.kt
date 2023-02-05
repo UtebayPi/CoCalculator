@@ -41,9 +41,9 @@ fun Calculator() {
                 .align(Alignment.End)
         ) {
             Text(
-                text = viewModel.number1 +
-                        (viewModel.operation?.symbol ?: "") +
-                        viewModel.number2,
+                text = viewModel.number1.value +
+                        (viewModel.operation.value?.symbol ?: "") +
+                        viewModel.number2.value,
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
                     //.weight(1F)

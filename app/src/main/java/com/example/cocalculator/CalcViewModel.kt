@@ -1,83 +1,104 @@
 package com.example.cocalculator
 
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 
 class CalcViewModel : ViewModel() {
-    var number1 by mutableStateOf("")
-        private set
+    private val _number1 = mutableStateOf("")
+    val number1: State<String> = _number1
+    private val _number2 = mutableStateOf("")
+    val number2: State<String> = _number2
+    private val _operation = mutableStateOf<Operations?>(null)
+    val operation: State<Operations?> = _operation
 
-    var number2 by mutableStateOf("")
-        private set
+    //To know what number should be edited
+    private fun validateNumber1() =
+        _number2.value.isEmpty() && _operation.value == null && _number1.value.length <= NUMBER_LIMIT
 
-    var operation by mutableStateOf<Operations?>(null)
-        private set
+    private fun validateNumber2() =
+        _number1.value.isNotEmpty() && _operation.value != null && _number2.value.length <= NUMBER_LIMIT
 
-    fun validateNumber1() =
-        number2.isEmpty() && operation == null && number1.length <= NUMBER_LIMIT
+    //Used the Strategy Pattern to get rid of the code duplication in couple of places.
+    private fun editCorrectNumber(lambda: (MutableState<String>) -> Unit) = when {
+        validateNumber1() -> lambda(_number1)
+        validateNumber2() -> lambda(_number2)
+        else -> throw Exception("Error in numberValidation")
 
-    fun validateNumber2() =
-        number1.isNotEmpty() && operation != null && number2.length <= NUMBER_LIMIT
+    }
 
     fun numberPressed(newNumber: String) {
-        when {
-            validateNumber1() -> {
-                if (number1.firstOrNull() != '0' || number1.take(2) == "0.")
-                    number1 += newNumber
-            }
-            validateNumber2() -> {
-                if (number2.firstOrNull() != '0' || number2.take(2) == "0.")
-                    number2 += newNumber
+        editCorrectNumber { number ->
+            //So that you can't write multiple 000's as first numbers.
+            if (number.value.firstOrNull() != '0'
+                || number.value.take(2) == "0."
+                || newNumber != "0"
+            ) {
+                //If the first number is 0 and not "0.", replace it with a new number.
+                if (number.value.firstOrNull() == '0' && number.value.take(2) != "0.") {
+                    number.value = newNumber
+                } else
+                    number.value += newNumber
             }
         }
     }
 
     fun dotPressed() {
-        when {
-            validateNumber1() && number1.isNotEmpty() && !number1.contains(".") -> number1 += "."
-            validateNumber2() && number2.isNotEmpty() && !number2.contains(".") -> number2 += "."
+        editCorrectNumber { number ->
+            if (number.value.isNotEmpty() && !number.value.contains(".")) number.value += "."
         }
     }
 
     fun operationPressed(newOperation: Operations) {
-        if (number1.isNotEmpty() && number2.isNotEmpty() && operation != null) calculate()
-        operation = newOperation
+        calculate()
+        //If all three values are filled, then it will perform the calculation,
+        //and assign a new operation. Otherwise it will just assign a new operation.
+        _operation.value = newOperation
     }
 
     fun delete() {
         when {
-            number2.isNotEmpty() -> number2 = number2.dropLast(1)
-            number2.isEmpty() && operation != null -> operation = null
-            number1.isNotEmpty() && operation == null && number2.isEmpty() -> number1 =
-                number1.dropLast(1)
+            //if we are deleting the operation
+            _number1.value.isNotEmpty()
+                    && _number2.value.isEmpty()
+                    && _operation.value != null ->
+                _operation.value = null
+            else ->
+                editCorrectNumber { number ->
+                    number.value = number.value.dropLast(1)
+                }
         }
     }
 
     fun allClear() {
-        number1 = ""
-        number2 = ""
-        operation = null
+        _number1.value = ""
+        _number2.value = ""
+        _operation.value = null
     }
 
     fun calculate() {
-        if (number1.isEmpty() || number2.isEmpty() || operation == null) return
-        val num1 = number1.toFloatOrNull()
-        val num2 = number2.toFloatOrNull()
+        if (_number1.value.isEmpty() || _number2.value.isEmpty() || _operation.value == null) return
+        val num1 = _number1.value.toFloatOrNull()
+        val num2 = _number2.value.toFloatOrNull()
         if (num1 == null || num2 == null) return
-        val result = when (operation) {
+        //Everything above is just validation
+
+        val result = when (_operation.value) {
             Operations.Multiply -> num1 * num2
             Operations.Divide -> {
+                //so that you can't divide by 0
                 if (num2 == 0F) return else num1 / num2
             }
             Operations.Subtract -> num1 - num2
             Operations.Add -> num1 + num2
             null -> return
         }.toString()
-        number1 = if (result.takeLast(2) == ".0") result.dropLast(2) else result
-        number2 = ""
-        operation = null
+
+        //if the result ends with .0, remove it.
+        _number1.value = if (result.takeLast(2) == ".0") result.dropLast(2) else result
+        _number2.value = ""
+        _operation.value = null
     }
 }
 
