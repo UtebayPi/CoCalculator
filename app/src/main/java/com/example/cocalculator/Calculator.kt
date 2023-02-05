@@ -1,8 +1,11 @@
 package com.example.cocalculator
 
-import androidx.compose.foundation.*
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Backspace
 import androidx.compose.material3.Icon
@@ -13,7 +16,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -26,23 +28,8 @@ fun Calculator() {
     val viewModel = viewModel<CalcViewModel>()
     val spacing = 8.dp
     val scrollState = rememberScrollState(0)
-//    Column(verticalArrangement = Arrangement.Bottom) {
-//        Text(
-//            text = "afssggsogihgifghfdgdghofisjhoigidsfsfsdfjoisfishgiosdhdoihgosdogisdghojsgidoshsohgdshgosgdoghosdhgodishgsdodhogdhgoisghsghsdghsghsgoisdhgoisdgosighso",
-////            text = viewModel.number1 +
-////                    (viewModel.operation?.symbol ?: "") +
-////                    viewModel.number2,
-//            modifier = Modifier
-//                .align(Alignment.End)
-//                .weight(1F)
-//                .verticalScroll(scrollState),
-//            fontSize = 70.sp,
-//            //maxLines = 2,
-//            lineHeight = 70.sp
-//        )
     Column(
         modifier = Modifier
-            //.weight(2F)
             .fillMaxSize()
             .padding(PaddingValues(spacing)),
         verticalArrangement = Arrangement
@@ -54,7 +41,6 @@ fun Calculator() {
                 .align(Alignment.End)
         ) {
             Text(
-                // text = "afssggsdghsgsdgohddd",
                 text = viewModel.number1 +
                         (viewModel.operation?.symbol ?: "") +
                         viewModel.number2,
@@ -82,8 +68,7 @@ fun Calculator() {
             )
             Icon(
                 imageVector = Icons.Filled.Backspace,
-                tint = if (isSystemInDarkTheme()) MaterialTheme.colorScheme.surface
-                else Color.White,
+                tint = MaterialTheme.colorScheme.onPrimary,
                 contentDescription = "Delete",
                 modifier = Modifier
                     .clip(CircleShape)
@@ -92,7 +77,7 @@ fun Calculator() {
                     .background(MaterialTheme.colorScheme.primary)
                     .clickable { viewModel.delete() }
                     .scale(0.5F)
-                    .offset(x = -3.dp)
+                    .offset(x = (-3).dp)
             )
             CalculatorButton(
                 onClick = { viewModel.operationPressed(Operations.Divide) },

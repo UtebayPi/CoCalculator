@@ -42,6 +42,7 @@ class CalcViewModel : ViewModel() {
     }
 
     fun operationPressed(newOperation: Operations) {
+        if (number1.isNotEmpty() && number2.isNotEmpty() && operation != null) calculate()
         operation = newOperation
     }
 
@@ -66,11 +67,9 @@ class CalcViewModel : ViewModel() {
         val num2 = number2.toFloatOrNull()
         if (num1 == null || num2 == null) return
         val result = when (operation) {
-            Operations.Multiply ->
-                num1 * num2
+            Operations.Multiply -> num1 * num2
             Operations.Divide -> {
-                if (num2 == 0F) return else
-                    num1 / num2
+                if (num2 == 0F) return else num1 / num2
             }
             Operations.Subtract -> num1 - num2
             Operations.Add -> num1 + num2
