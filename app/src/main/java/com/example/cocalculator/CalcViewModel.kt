@@ -24,7 +24,7 @@ class CalcViewModel : ViewModel() {
     private fun editCorrectNumber(lambda: (MutableState<String>) -> Unit) = when {
         validateNumber1() -> lambda(_number1)
         validateNumber2() -> lambda(_number2)
-        else -> throw Exception("Error in numberValidation")
+        else -> throw Exception("Error in number validation")
 
     }
 
