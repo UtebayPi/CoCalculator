@@ -8,20 +8,14 @@ class CalcViewModelTest {
     @Test
     fun calcViewModel_DotPressed_NotShown() {
         viewModel.dotPressed()
-        val displayedText = viewModel.number1.value +
-                (viewModel.operation.value?.symbol ?: "") +
-                viewModel.number2.value
-        assert(displayedText == "")
+        assert(viewModel.state.getCalculatorText() == "")
     }
 
     @Test
     fun calcViewModel_ZeroPressedTwice_OnlyOneZeroShown() {
         viewModel.numberPressed("0")
         viewModel.numberPressed("0")
-        val displayedText = viewModel.number1.value +
-                (viewModel.operation.value?.symbol ?: "") +
-                viewModel.number2.value
-        assert(displayedText == "0")
+        assert(viewModel.state.getCalculatorText() == "0")
     }
 
     @Test
@@ -31,9 +25,6 @@ class CalcViewModelTest {
         viewModel.operationPressed(Operations.Divide)
         viewModel.numberPressed("4")
         viewModel.calculate()
-        val displayedText = viewModel.number1.value +
-                (viewModel.operation.value?.symbol ?: "") +
-                viewModel.number2.value
-        assert(displayedText == "6.25")
+        assert(viewModel.state.getCalculatorText() == "6.25")
     }
 }

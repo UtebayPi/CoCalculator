@@ -102,4 +102,7 @@ dependencies {
     implementation 'androidx.activity:activity-compose:1.6.1'
     // Optional - Integration with ViewModels
     implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1'
+
+    //For reflection
+    implementation "org.jetbrains.kotlin:kotlin-reflect:1.7.20"
 }
