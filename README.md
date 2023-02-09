@@ -1,2 +1,2 @@
 # CoCalculator
-Calculator app made with jetpack compose
+Calculator app made with Jetpack Compose
