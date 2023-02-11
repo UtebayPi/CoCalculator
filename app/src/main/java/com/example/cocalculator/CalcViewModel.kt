@@ -1,103 +1,52 @@
 package com.example.cocalculator
 
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 
 class CalcViewModel : ViewModel() {
-    //    private val _number1 = mutableStateOf("")
-//    val number1: State<String> = _number1
-//    private val _number2 = mutableStateOf("")
-//    val number2: State<String> = _number2
-//    private val _operation = mutableStateOf<Operations?>(null)
-//    val operation: State<Operations?> = _operation
-    var state by mutableStateOf(CalculatorState())
-//    var number1
-//        get() = state.number1
-//        set(newNumber) {
-//            state = state.copy(number1 = newNumber)
-//        }
-//    var number2
-//        get() = state.number2
-//        set(newNumber) {
-//            state = state.copy(number2 = newNumber)
-//        }
-
-//    var propertyName = "number1"
-//    val propertyValue: String = ""
-//    val b = state::class.typeParameters.first { it.name == propertyName }
-//    val a = state::class.java.getField(propertyName)
-
-    //get() = state::class.memberProperties.first { it.name == propertyName }.get(state)
-//        set(value) {
-//            state::class.memberProperties.first { it.name == propertyName }.set(state, value)
-//        }
-//    fun copyObjectWithChangedProperties(original: Any, changedProperties: Map<String, Any>): Any {
-//        val kClass = original::class
-//        val constructor = kClass.constructors.first()
-//        val properties = kClass.members
-//
-//        val arguments = constructor.parameters.map { parameter ->
-//            val property = properties.first { it.name == parameter.name }
-//            val newValue = changedProperties[parameter.name]
-//            newValue
-//        }
-//
-//        return constructor.call(*arguments.toTypedArray())
-//    }
+    private val _number1 = mutableStateOf("")
+    val number1: State<String> = _number1
+    private val _number2 = mutableStateOf("")
+    val number2: State<String> = _number2
+    private val _operation = mutableStateOf<Operations?>(null)
+    val operation: State<Operations?> = _operation
 
     //To know what number should be edited
     private fun validateNumber1() =
-        state.number2.isEmpty() && state.operation == null && state.number1.length <= NUMBER_LIMIT
+        _number2.value.isEmpty() && _operation.value == null && _number1.value.length <= NUMBER_LIMIT
 
     private fun validateNumber2() =
-        state.number1.isNotEmpty() && state.operation != null && state.number2.length <= NUMBER_LIMIT
+        _number1.value.isNotEmpty() && _operation.value != null && _number2.value.length <= NUMBER_LIMIT
 
     //Used the Strategy Pattern to get rid of the code duplication in couple of places.
-    private fun editCorrectNumber(lambda: (getNumber: String, setNumber: (newNumber: String) -> Unit) -> Unit) =
-        //i can create a local value with custom setter and getter
-        when {
-            validateNumber1() -> lambda(state.number1) { newNumber ->
-                state = state.copy(number1 = newNumber)
-            }
-            validateNumber2() -> lambda(state.number2) { newNumber ->
-                state = state.copy(number2 = newNumber)
-            }
-            else -> throw Exception("Error in number validation")
-        }
+    private fun editCorrectNumber(lambda: (MutableState<String>) -> Unit) = when {
+        validateNumber1() -> lambda(_number1)
+        validateNumber2() -> lambda(_number2)
+        else -> throw Exception("Error in number validation")
 
-    private fun ediCorrectNumber(lambda: (getNumber: String, setNumber: (newNumber: String) -> Unit) -> Unit) =
-        //i can create a local value with custom setter and getter
-        when {
-            validateNumber1() -> lambda(state.number1) { newNumber ->
-                //state = state.setPropertyValue("number1", newNumber)
-            }
-            validateNumber2() -> lambda(state.number2) { newNumber ->
-                // state = state.setPropertyValue("number2", newNumber)
-            }
-            else -> throw Exception("Error in number validation")
-        }
+    }
 
     fun numberPressed(newNumber: String) {
-        editCorrectNumber { number, setNumber ->
+        editCorrectNumber { number ->
             //So that you can't write multiple 000's as first numbers.
-            if (number.firstOrNull() != '0'
-                || number.take(2) == "0."
+            if (number.value.firstOrNull() != '0'
+                || number.value.take(2) == "0."
                 || newNumber != "0"
             ) {
                 //If the first number is 0 and not "0.", replace it with a new number.
-                if (number.firstOrNull() == '0' && number.take(2) != "0.") {
-                    setNumber(newNumber)
+                if (number.value.firstOrNull() == '0' && number.value.take(2) != "0.") {
+                    number.value = newNumber
                 } else
-                    setNumber(number + newNumber)
+                    number.value += newNumber
             }
         }
     }
 
     fun dotPressed() {
-        editCorrectNumber { number, setNumber ->
-            if (number.isNotEmpty() && !number.contains(".")) setNumber("$number.")
+        editCorrectNumber { number ->
+            if (number.value.isNotEmpty() && !number.value.contains(".")) number.value += "."
         }
     }
 
@@ -105,37 +54,37 @@ class CalcViewModel : ViewModel() {
         calculate()
         //If all three values are filled, then it will perform the calculation,
         //and assign a new operation. Otherwise it will just assign a new operation.
-        state = state.copy(operation = newOperation)
+        _operation.value = newOperation
     }
 
     fun delete() {
         when {
             //if we are deleting the operation
-            state.number1.isNotEmpty()
-                    && state.number2.isEmpty()
-                    && state.operation != null ->
-                state = state.copy(operation = null)
+            _number1.value.isNotEmpty()
+                    && _number2.value.isEmpty()
+                    && _operation.value != null ->
+                _operation.value = null
             else ->
-                editCorrectNumber { number, setNumber ->
-                    setNumber(number.dropLast(1))
+                editCorrectNumber { number ->
+                    number.value = number.value.dropLast(1)
                 }
         }
     }
 
     fun allClear() {
-        state = state.copy(number1 = "")
-        state = state.copy(number2 = "")
-        state = state.copy(operation = null)
+        _number1.value = ""
+        _number2.value = ""
+        _operation.value = null
     }
 
     fun calculate() {
-        if (state.number1.isEmpty() || state.number2.isEmpty() || state.operation == null) return
-        val num1 = state.number1.toFloatOrNull()
-        val num2 = state.number2.toFloatOrNull()
+        if (_number1.value.isEmpty() || _number2.value.isEmpty() || _operation.value == null) return
+        val num1 = _number1.value.toFloatOrNull()
+        val num2 = _number2.value.toFloatOrNull()
         if (num1 == null || num2 == null) return
         //Everything above is just validation
 
-        val result = when (state.operation) {
+        val result = when (_operation.value) {
             Operations.Multiply -> num1 * num2
             Operations.Divide -> {
                 //so that you can't divide by 0
@@ -147,11 +96,9 @@ class CalcViewModel : ViewModel() {
         }.toString()
 
         //if the result ends with .0, remove it.
-        state = state.copy(
-            number1 = if (result.takeLast(2) == ".0") result.dropLast(2) else result
-        )
-        state = state.copy(number2 = "")
-        state = state.copy(operation = null)
+        _number1.value = if (result.takeLast(2) == ".0") result.dropLast(2) else result
+        _number2.value = ""
+        _operation.value = null
     }
 }
 

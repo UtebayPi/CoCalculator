@@ -26,7 +26,6 @@ import com.example.cocalculator.ui.theme.CoCalculatorTheme
 @Composable
 fun Calculator() {
     val viewModel = viewModel<CalcViewModel>()
-    val state = viewModel.state
     val spacing = 8.dp
     val scrollState = rememberScrollState(0)
     Column(
@@ -42,7 +41,9 @@ fun Calculator() {
                 .align(Alignment.End)
         ) {
             Text(
-                text = state.getCalculatorText(),
+                text = viewModel.number1.value +
+                        (viewModel.operation.value?.symbol ?: "") +
+                        viewModel.number2.value,
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
                     //.weight(1F)
