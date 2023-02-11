@@ -1,29 +1,43 @@
 package com.example.cocalculator
 
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
 
 class CalcViewModel : ViewModel() {
-    private val _number1 = mutableStateOf("")
-    val number1: State<String> = _number1
-    private val _number2 = mutableStateOf("")
-    val number2: State<String> = _number2
-    private val _operation = mutableStateOf<Operations?>(null)
-    val operation: State<Operations?> = _operation
+    private val number1 = MutableStateFlow("")
+
+    //val number1: StateFlow<String> = _number1
+    private val number2 = MutableStateFlow("")
+
+    //val number2: StateFlow<String> = _number2
+    private val operation = MutableStateFlow<Operations?>(null)
+    //val operation: StateFlow<Operations?> = _operation
+
+    val result: Flow<String> = combine(number1, number2, operation) { num1, num2, op ->
+        num1 + (op?.symbol ?: "") + num2
+    }
+//    val stateFlowResult = MutableStateFlow("")
+//    init {
+//        viewModelScope.launch {
+//            result.collect(){
+//                stateFlowResult.value = it
+//            }
+//        }
+//    }
 
     //To know what number should be edited
     private fun validateNumber1() =
-        _number2.value.isEmpty() && _operation.value == null && _number1.value.length <= NUMBER_LIMIT
+        number2.value.isEmpty() && operation.value == null && number1.value.length <= NUMBER_LIMIT
 
     private fun validateNumber2() =
-        _number1.value.isNotEmpty() && _operation.value != null && _number2.value.length <= NUMBER_LIMIT
+        number1.value.isNotEmpty() && operation.value != null && number2.value.length <= NUMBER_LIMIT
 
     //Used the Strategy Pattern to get rid of the code duplication in couple of places.
-    private fun editCorrectNumber(lambda: (MutableState<String>) -> Unit) = when {
-        validateNumber1() -> lambda(_number1)
-        validateNumber2() -> lambda(_number2)
+    private fun editCorrectNumber(lambda: (MutableStateFlow<String>) -> Unit) = when {
+        validateNumber1() -> lambda(number1)
+        validateNumber2() -> lambda(number2)
         else -> throw Exception("Error in number validation")
 
     }
@@ -54,16 +68,16 @@ class CalcViewModel : ViewModel() {
         calculate()
         //If all three values are filled, then it will perform the calculation,
         //and assign a new operation. Otherwise it will just assign a new operation.
-        _operation.value = newOperation
+        operation.value = newOperation
     }
 
     fun delete() {
         when {
             //if we are deleting the operation
-            _number1.value.isNotEmpty()
-                    && _number2.value.isEmpty()
-                    && _operation.value != null ->
-                _operation.value = null
+            number1.value.isNotEmpty()
+                    && number2.value.isEmpty()
+                    && operation.value != null ->
+                operation.value = null
             else ->
                 editCorrectNumber { number ->
                     number.value = number.value.dropLast(1)
@@ -72,19 +86,19 @@ class CalcViewModel : ViewModel() {
     }
 
     fun allClear() {
-        _number1.value = ""
-        _number2.value = ""
-        _operation.value = null
+        number1.value = ""
+        number2.value = ""
+        operation.value = null
     }
 
     fun calculate() {
-        if (_number1.value.isEmpty() || _number2.value.isEmpty() || _operation.value == null) return
-        val num1 = _number1.value.toFloatOrNull()
-        val num2 = _number2.value.toFloatOrNull()
+        if (number1.value.isEmpty() || number2.value.isEmpty() || operation.value == null) return
+        val num1 = number1.value.toFloatOrNull()
+        val num2 = number2.value.toFloatOrNull()
         if (num1 == null || num2 == null) return
         //Everything above is just validation
 
-        val result = when (_operation.value) {
+        val result = when (operation.value) {
             Operations.Multiply -> num1 * num2
             Operations.Divide -> {
                 //so that you can't divide by 0
@@ -96,9 +110,9 @@ class CalcViewModel : ViewModel() {
         }.toString()
 
         //if the result ends with .0, remove it.
-        _number1.value = if (result.takeLast(2) == ".0") result.dropLast(2) else result
-        _number2.value = ""
-        _operation.value = null
+        number1.value = if (result.takeLast(2) == ".0") result.dropLast(2) else result
+        number2.value = ""
+        operation.value = null
     }
 }
 

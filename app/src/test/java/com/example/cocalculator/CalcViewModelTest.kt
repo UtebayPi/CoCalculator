@@ -1,39 +1,40 @@
 package com.example.cocalculator
 
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class CalcViewModelTest {
     private val viewModel = CalcViewModel()
 
+    private val testScope = TestScope()
+
     @Test
-    fun calcViewModel_DotPressed_NotShown() {
+    fun calcViewModel_DotPressed_NotShown() = runTest {
         viewModel.dotPressed()
-        val displayedText = viewModel.number1.value +
-                (viewModel.operation.value?.symbol ?: "") +
-                viewModel.number2.value
+        val displayedText = viewModel.result.stateIn(testScope).value
         assert(displayedText == "")
     }
 
     @Test
-    fun calcViewModel_ZeroPressedTwice_OnlyOneZeroShown() {
+    fun calcViewModel_ZeroPressedTwice_OnlyOneZeroShown() = runTest {
         viewModel.numberPressed("0")
         viewModel.numberPressed("0")
-        val displayedText = viewModel.number1.value +
-                (viewModel.operation.value?.symbol ?: "") +
-                viewModel.number2.value
+        val displayedText = viewModel.result.stateIn(testScope).value
         assert(displayedText == "0")
     }
 
     @Test
-    fun calcViewModel_writeAllValuesAndPerformCalculation_CorrectResultIsShown() {
+    fun calcViewModel_writeAllValuesAndPerformCalculation_CorrectResultIsShown() = runTest {
         viewModel.numberPressed("2")
         viewModel.numberPressed("5")
         viewModel.operationPressed(Operations.Divide)
         viewModel.numberPressed("4")
         viewModel.calculate()
-        val displayedText = viewModel.number1.value +
-                (viewModel.operation.value?.symbol ?: "") +
-                viewModel.number2.value
+        val displayedText = viewModel.result.stateIn(testScope).value
         assert(displayedText == "6.25")
     }
 }
