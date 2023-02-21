@@ -1,23 +1,18 @@
 package com.example.cocalculator
 
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.combine
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.*
 
-class CalcViewModel : ViewModel() {
-    private val number1 = MutableStateFlow("")
-
-    //val number1: StateFlow<String> = _number1
-    private val number2 = MutableStateFlow("")
-
-    //val number2: StateFlow<String> = _number2
-    private val operation = MutableStateFlow<Operations?>(null)
-    //val operation: StateFlow<Operations?> = _operation
-
-    val result: Flow<String> = combine(number1, number2, operation) { num1, num2, op ->
+class CalcViewModel(private val dispatchers: DispatcherProvider = DefaultDispatcher()) :
+    ViewModel() {
+    val number1 = MutableStateFlow("")
+    val number2 = MutableStateFlow("")
+    val operation = MutableStateFlow<Operations?>(null)
+    val result = combine(number1, number2, operation) { num1, num2, op ->
         num1 + (op?.symbol ?: "") + num2
-    }
+    }.flowOn(dispatchers.main)
+
 //    val stateFlowResult = MutableStateFlow("")
 //    init {
 //        viewModelScope.launch {

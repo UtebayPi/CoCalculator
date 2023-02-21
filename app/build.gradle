@@ -106,4 +106,8 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.0-alpha03")
     //Coroutine testing
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4"
+    //Turbine
+    testImplementation 'app.cash.turbine:turbine:0.12.1'
+
+    testImplementation "com.google.truth:truth:1.1.3"
 }
