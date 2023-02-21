@@ -12,9 +12,8 @@ import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class CalcViewModelTest {
-    private val testDispatcher = TestDispatcher()
 
-    private val viewModel = CalcViewModel(testDispatcher)
+    private val viewModel = CalcViewModel()
     private val testScope = TestScope()
 
     @Test
