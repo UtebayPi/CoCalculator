@@ -5,21 +5,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 
 class CalcViewModel : ViewModel() {
-    val number1 = MutableStateFlow("")
-    val number2 = MutableStateFlow("")
-    val operation = MutableStateFlow<Operations?>(null)
+    private val number1 = MutableStateFlow("")
+    private val number2 = MutableStateFlow("")
+    private val operation = MutableStateFlow<Operations?>(null)
     val result = combine(number1, number2, operation) { num1, num2, op ->
         num1 + (op?.symbol ?: "") + num2
     }
-
-//    val stateFlowResult = MutableStateFlow("")
-//    init {
-//        viewModelScope.launch {
-//            result.collect(){
-//                stateFlowResult.value = it
-//            }
-//        }
-//    }
 
     //To know what number should be edited
     private fun validateNumber1() =
