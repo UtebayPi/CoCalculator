@@ -1,5 +1,6 @@
 package com.example.cocalculator
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -10,6 +11,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Backspace
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -67,7 +69,8 @@ fun Calculator() {
                 modifier = Modifier
                     .aspectRatio(2.1F)
                     .weight(2.1F),
-                content = "AC"
+                content = "AC",
+                color = MaterialTheme.colorScheme.secondary
             )
             Icon(
                 imageVector = Icons.Filled.Backspace,
@@ -77,12 +80,13 @@ fun Calculator() {
                     .clip(CircleShape)
                     .aspectRatio(1F)
                     .weight(1F)
-                    .background(MaterialTheme.colorScheme.primary)
+                    .background(MaterialTheme.colorScheme.secondary)
                     .clickable { viewModel.delete() }
                     .scale(0.5F)
                     .offset(x = (-3).dp)
             )
             CalculatorButton(
+                color = MaterialTheme.colorScheme.tertiary,
                 onClick = { viewModel.operationPressed(Operations.Divide) },
                 modifier = Modifier
                     .aspectRatio(1F)
@@ -120,6 +124,7 @@ fun Calculator() {
                 modifier = Modifier
                     .aspectRatio(1F)
                     .weight(1F),
+                color = MaterialTheme.colorScheme.tertiary,
                 onClick = { viewModel.operationPressed(Operations.Multiply) }, content = "*"
             )
         }
@@ -149,6 +154,7 @@ fun Calculator() {
                 content = "6"
             )
             CalculatorButton(
+                color = MaterialTheme.colorScheme.tertiary,
                 modifier = Modifier
                     .aspectRatio(1F)
                     .weight(1F),
@@ -182,6 +188,7 @@ fun Calculator() {
                 content = "3"
             )
             CalculatorButton(
+                color = MaterialTheme.colorScheme.tertiary,
                 modifier = Modifier
                     .aspectRatio(1F)
                     .weight(1F),
@@ -208,6 +215,7 @@ fun Calculator() {
                 content = "."
             )
             CalculatorButton(
+                color = MaterialTheme.colorScheme.tertiary,
                 modifier = Modifier
                     .aspectRatio(1F)
                     .weight(1F),
@@ -220,10 +228,28 @@ fun Calculator() {
 
 //}
 
-@Preview
+@Preview(name = "Light")
 @Composable
 fun CalculatorPreview() {
     CoCalculatorTheme {
-        Calculator()
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            Calculator()
+        }
+    }
+}
+
+@Preview(name = "Dark", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun CalculatorDarkPreview() {
+    CoCalculatorTheme {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            Calculator()
+        }
     }
 }
