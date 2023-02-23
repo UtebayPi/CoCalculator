@@ -1,4 +1,4 @@
-package com.example.cocalculator
+package com.utebaypi.cocalculator
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
@@ -9,7 +9,7 @@ import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import com.example.cocalculator.ui.theme.CoCalculatorTheme
+import com.utebaypi.cocalculator.ui.theme.CoCalculatorTheme
 import org.junit.Rule
 import org.junit.Test
 

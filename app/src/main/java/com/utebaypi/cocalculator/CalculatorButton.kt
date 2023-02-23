@@ -1,4 +1,4 @@
-package com.example.cocalculator
+package com.utebaypi.cocalculator
 
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable

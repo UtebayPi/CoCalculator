@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace 'com.example.cocalculator'
+    namespace 'com.utebaypi.cocalculator'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.example.cocalculator"
+        applicationId "com.utebaypi.cocalculator"
         minSdk 21
         targetSdk 33
         versionCode 1
@@ -22,7 +22,7 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }

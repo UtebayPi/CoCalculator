@@ -1,4 +1,4 @@
-package com.example.cocalculator
+package com.utebaypi.cocalculator
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

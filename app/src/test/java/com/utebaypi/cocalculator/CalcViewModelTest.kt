@@ -1,4 +1,4 @@
-package com.example.cocalculator
+package com.utebaypi.cocalculator
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first

@@ -1,4 +1,4 @@
-package com.example.cocalculator
+package com.utebaypi.cocalculator
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -9,7 +9,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.cocalculator.ui.theme.CoCalculatorTheme
+import com.utebaypi.cocalculator.ui.theme.CoCalculatorTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

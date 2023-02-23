@@ -1,4 +1,4 @@
-package com.example.cocalculator.ui.theme
+package com.utebaypi.cocalculator.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

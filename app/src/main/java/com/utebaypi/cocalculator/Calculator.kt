@@ -1,4 +1,4 @@
-package com.example.cocalculator
+package com.utebaypi.cocalculator
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.cocalculator.ui.theme.CoCalculatorTheme
+import com.utebaypi.cocalculator.ui.theme.CoCalculatorTheme
 
 @OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable

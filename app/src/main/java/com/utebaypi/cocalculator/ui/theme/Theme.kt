@@ -1,4 +1,4 @@
-package com.example.cocalculator.ui.theme
+package com.utebaypi.cocalculator.ui.theme
 
 import android.app.Activity
 import androidx.compose.foundation.isSystemInDarkTheme
