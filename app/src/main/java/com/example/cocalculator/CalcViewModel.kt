@@ -14,21 +14,22 @@ class CalcViewModel : ViewModel() {
 
     //To know what number should be edited
     private fun validateNumber1() =
-        number2.value.isEmpty() && operation.value == null && number1.value.length <= NUMBER_LIMIT
+        number2.value.isEmpty() && operation.value == null
 
     private fun validateNumber2() =
-        number1.value.isNotEmpty() && operation.value != null && number2.value.length <= NUMBER_LIMIT
+        number1.value.isNotEmpty() && operation.value != null
 
     //Used the Strategy Pattern to get rid of the code duplication in couple of places.
     private fun editCorrectNumber(lambda: (MutableStateFlow<String>) -> Unit) = when {
         validateNumber1() -> lambda(number1)
         validateNumber2() -> lambda(number2)
-        else -> throw Exception("Error in number validation")
+        else -> {}
 
     }
 
     fun numberPressed(newNumber: String) {
         editCorrectNumber { number ->
+            if(number.value.length > NUMBER_LIMIT) return@editCorrectNumber
             //So that you can't write multiple 000's as first numbers.
             if (number.value.firstOrNull() != '0'
                 || number.value.take(2) == "0."
