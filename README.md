@@ -1,5 +1,5 @@
 # CoCalculator
-Calculator app made with Jetpack Compose 
+Calculator app made with Jetpack Compose
 
 Google Play link: https://play.google.com/store/apps/details?id=com.utebaypi.cocalculator
 
